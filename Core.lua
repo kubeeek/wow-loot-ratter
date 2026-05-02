@@ -6,6 +6,10 @@ ns.L = {
     ASK_BUTTON       = "Ask",
     WHISPER_TEMPLATE = "hey, do you need %item?",
     UPGRADE          = "upgrade for you",
+    LABEL_YOU        = "You",
+    LABEL_YOURS      = "yours",
+    LABEL_THEIR      = "their",
+    LABEL_ILVL       = "ilvl",
 }
 
 local LootRatter = LibStub("AceAddon-3.0"):NewAddon(ADDON_NAME,

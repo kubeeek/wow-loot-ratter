@@ -178,7 +178,7 @@ function UI:AddLootEntry(playerName, itemLink, isUpgrade, isSelf, wasWhispered, 
             local yoursColor = (itemLevel and looterEquippedLevel < itemLevel) and "00dd00" or "dd2222"
             local yoursFs = row:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
             yoursFs:SetPoint("RIGHT", row, "RIGHT", cursor, 0)
-            yoursFs:SetText(string.format("|cff%syours:%d|r", yoursColor, looterEquippedLevel))
+            yoursFs:SetText(string.format("|cff%s%s:%d|r", yoursColor, ns.L.LABEL_YOURS, looterEquippedLevel))
             cursor = cursor - COL
         end
 
@@ -186,7 +186,7 @@ function UI:AddLootEntry(playerName, itemLink, isUpgrade, isSelf, wasWhispered, 
         if showLooterIlvl then
             local theirIlvl = row:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
             theirIlvl:SetPoint("RIGHT", row, "RIGHT", cursor, 0)
-            theirIlvl:SetText(string.format("|cff888888their:%d|r", looterEquippedLevel))
+            theirIlvl:SetText(string.format("|cff888888%s:%d|r", ns.L.LABEL_THEIR, looterEquippedLevel))
             cursor = cursor - COL
         end
     elseif isUpgrade and isSelf then
@@ -194,7 +194,7 @@ function UI:AddLootEntry(playerName, itemLink, isUpgrade, isSelf, wasWhispered, 
         if showLooterIlvl then
             local yoursFs = row:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
             yoursFs:SetPoint("RIGHT", row, "RIGHT", cursor, 0)
-            yoursFs:SetText(string.format("|cff00dd00yours:%d|r", looterEquippedLevel))
+            yoursFs:SetText(string.format("|cff00dd00%s:%d|r", ns.L.LABEL_YOURS, looterEquippedLevel))
             cursor = cursor - COL
         end
     end
@@ -203,7 +203,7 @@ function UI:AddLootEntry(playerName, itemLink, isUpgrade, isSelf, wasWhispered, 
     if showItemIlvl then
         local ilvlFs = row:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
         ilvlFs:SetPoint("RIGHT", row, "RIGHT", cursor, 0)
-        ilvlFs:SetText(string.format("|cff888888ilvl:%d|r", itemLevel))
+        ilvlFs:SetText(string.format("|cff888888%s:%d|r", ns.L.LABEL_ILVL, itemLevel))
         cursor = cursor - COL
     end
 
@@ -215,7 +215,7 @@ function UI:AddLootEntry(playerName, itemLink, isUpgrade, isSelf, wasWhispered, 
     label:SetPoint("RIGHT", row,   "RIGHT", labelRight, 0)
     label:SetJustifyH("LEFT")
     label:SetNonSpaceWrap(false)
-    local name = isSelf and "|cffffd700You|r" or playerName
+    local name = isSelf and ("|cffffd700" .. ns.L.LABEL_YOU .. "|r") or playerName
     label:SetText(name .. ": " .. itemLink)
 
     -- Tooltip only when hovering the icon or item link text
