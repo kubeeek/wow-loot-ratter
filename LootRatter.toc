@@ -2,8 +2,8 @@
 ## Title: Loot Ratter
 ## Notes: Tracks group loot in instances. Highlights upgrades and auto-whispers looters.
 ## Version: 1.0.0
-## SavedVariables: LootWhispererDB
-## IconTexture: Interface\AddOns\LootWhisperer\icon.tga
+## SavedVariables: LootRatterDB
+## IconTexture: Interface\AddOns\LootRatter\icon.tga
 
 libs\LibStub\LibStub.lua
 libs\CallbackHandler-1.0\CallbackHandler-1.0.xml
