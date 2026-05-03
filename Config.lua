@@ -49,7 +49,7 @@ function Config:Initialize()
             whisperOnlyIfLooterOutgearsSlot = {
                 name  = "Only whisper if item is not a upgrade for the looter",
                 width = "full",
-                desc  = "Skip the auto-whisper unless the looter already has a higher-ilvl item equipped in that slot. They are more likely to trade or pass it.",
+                desc  = "Skip the auto-whisper unless the looter already has a higher-ilvl item equipped in that slot.",
                 type  = "toggle",
                 order = 4,
                 get   = function() return addon.db.profile.whisperOnlyIfLooterOutgearsSlot end,

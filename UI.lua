@@ -8,6 +8,22 @@ local ROW_H   = 22
 local ICON_S  = 16
 local PAD     = 6
 
+local C = {
+    frameBg         = {0.06, 0.06, 0.09, 0.93},
+    frameBorder     = {0.22, 0.22, 0.22, 1},
+    titleBarBg      = {0.05, 0.05, 0.20, 1},
+    divider         = {0.4,  0.4,  0.55, 0.55},
+    upgradeTint     = {0,    0.45, 0,    0.18},
+    askBtnBg        = {0.12, 0.25, 0.45, 0.90},
+    askBtnHighlight = {1,    1,    1,    0.15},
+    -- hex escape sequences for font strings
+    gold   = "ffd700",
+    ask    = "aaddff",
+    sent   = "44aa44",
+    dim    = "888888",
+    danger = "dd2222",
+}
+
 local mainFrame, scrollFrame, content
 local rows     = {}
 local contentH = 0
@@ -30,8 +46,8 @@ local function Build()
         tile = true, tileSize = 16, edgeSize = 16,
         insets = {left = 4, right = 4, top = 4, bottom = 4},
     })
-    mainFrame:SetBackdropColor(0.06, 0.06, 0.09, 0.93)
-    mainFrame:SetBackdropBorderColor(0.22, 0.22, 0.22, 1)
+    mainFrame:SetBackdropColor(unpack(C.frameBg))
+    mainFrame:SetBackdropBorderColor(unpack(C.frameBorder))
     mainFrame:SetResizable(true)
     mainFrame:SetResizeBounds(240, TITLE_H + PAD * 2 + ROW_H * 3 + 14)
     mainFrame:SetScript("OnSizeChanged", function(_, w)
@@ -44,17 +60,17 @@ local function Build()
     titleBg:SetPoint("TOPLEFT",  mainFrame, "TOPLEFT",   1, -1)
     titleBg:SetPoint("TOPRIGHT", mainFrame, "TOPRIGHT", -1, -1)
     titleBg:SetHeight(TITLE_H - 2)
-    titleBg:SetColorTexture(0.05, 0.05, 0.20, 1)
+    titleBg:SetColorTexture(unpack(C.titleBarBg))
 
     local title = mainFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
     title:SetPoint("LEFT", mainFrame, "TOPLEFT", PAD + 2, -(TITLE_H * 0.5))
-    title:SetText("|cffffd700" .. ns.DISPLAY_NAME .. "|r")
+    title:SetText("|cff" .. C.gold .. ns.DISPLAY_NAME .. "|r")
 
     local div = mainFrame:CreateTexture(nil, "BACKGROUND", nil, -4)
     div:SetPoint("TOPLEFT",  mainFrame, "TOPLEFT",   4, -TITLE_H)
     div:SetPoint("TOPRIGHT", mainFrame, "TOPRIGHT",  -4, -TITLE_H)
     div:SetHeight(1)
-    div:SetColorTexture(0.4, 0.4, 0.55, 0.55)
+    div:SetColorTexture(unpack(C.divider))
 
     local close = CreateFrame("Button", nil, mainFrame, "UIPanelCloseButton")
     close:SetSize(18, 18)
@@ -103,15 +119,15 @@ local function MakeAskButton(row, itemLink, playerName)
 
     local bg = btn:CreateTexture(nil, "BACKGROUND")
     bg:SetAllPoints(btn)
-    bg:SetColorTexture(0.12, 0.25, 0.45, 0.90)
+    bg:SetColorTexture(unpack(C.askBtnBg))
 
     local hl = btn:CreateTexture(nil, "HIGHLIGHT")
     hl:SetAllPoints(btn)
-    hl:SetColorTexture(1, 1, 1, 0.15)
+    hl:SetColorTexture(unpack(C.askBtnHighlight))
 
     local label = btn:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
     label:SetPoint("CENTER", btn)
-    label:SetText("|cffaaddff" .. ns.L.ASK_BUTTON .. "|r")
+    label:SetText("|cff" .. C.ask .. ns.L.ASK_BUTTON .. "|r")
 
     btn:SetScript("OnClick", function(self)
         local db  = ns.addon.db.profile
@@ -120,7 +136,7 @@ local function MakeAskButton(row, itemLink, playerName)
         self:Hide()
         local sent = row:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
         sent:SetPoint("RIGHT", row, "RIGHT", -3, 0)
-        sent:SetText("|cff44aa44" .. ns.L.SENT .. "|r")
+        sent:SetText("|cff" .. C.sent .. ns.L.SENT .. "|r")
     end)
 end
 
@@ -141,7 +157,7 @@ function UI:AddLootEntry(playerName, itemLink, isUpgrade, isSelf, wasWhispered, 
     if isUpgrade then
         local bg = row:CreateTexture(nil, "BACKGROUND")
         bg:SetAllPoints(row)
-        bg:SetColorTexture(0, 0.45, 0, 0.18)
+        bg:SetColorTexture(unpack(C.upgradeTint))
     end
 
     -- Item icon
@@ -167,7 +183,7 @@ function UI:AddLootEntry(playerName, itemLink, isUpgrade, isSelf, wasWhispered, 
         if wasWhispered then
             local sent = row:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
             sent:SetPoint("RIGHT", row, "RIGHT", cursor, 0)
-            sent:SetText("|cff44aa44" .. ns.L.SENT .. "|r")
+            sent:SetText("|cff" .. C.sent .. ns.L.SENT .. "|r")
         else
             MakeAskButton(row, itemLink, playerName)
         end
@@ -175,18 +191,18 @@ function UI:AddLootEntry(playerName, itemLink, isUpgrade, isSelf, wasWhispered, 
 
         -- yours:XXX
         if showLooterIlvl then
-            local yoursColor = (itemLevel and looterEquippedLevel < itemLevel) and "00dd00" or "dd2222"
             local yoursFs = row:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
             yoursFs:SetPoint("RIGHT", row, "RIGHT", cursor, 0)
-            yoursFs:SetText(string.format("|cff%s%s:%d|r", yoursColor, ns.L.LABEL_YOURS, looterEquippedLevel))
+            yoursFs:SetText(string.format("|cff" .. C.dim .. "%s:%d|r", ns.L.LABEL_YOURS, looterEquippedLevel))
             cursor = cursor - COL
         end
 
         -- their:XXX
         if showLooterIlvl then
+            local theirColor = (itemLevel and looterEquippedLevel < itemLevel) and C.danger or C.dim
             local theirIlvl = row:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
             theirIlvl:SetPoint("RIGHT", row, "RIGHT", cursor, 0)
-            theirIlvl:SetText(string.format("|cff888888%s:%d|r", ns.L.LABEL_THEIR, looterEquippedLevel))
+            theirIlvl:SetText(string.format("|cff%s%s:%d|r", theirColor, ns.L.LABEL_THEIR, looterEquippedLevel))
             cursor = cursor - COL
         end
     elseif isUpgrade and isSelf then
@@ -194,7 +210,7 @@ function UI:AddLootEntry(playerName, itemLink, isUpgrade, isSelf, wasWhispered, 
         if showLooterIlvl then
             local yoursFs = row:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
             yoursFs:SetPoint("RIGHT", row, "RIGHT", cursor, 0)
-            yoursFs:SetText(string.format("|cff00dd00%s:%d|r", ns.L.LABEL_YOURS, looterEquippedLevel))
+            yoursFs:SetText(string.format("|cff" .. C.dim .. "%s:%d|r", ns.L.LABEL_YOURS, looterEquippedLevel))
             cursor = cursor - COL
         end
     end
@@ -203,7 +219,7 @@ function UI:AddLootEntry(playerName, itemLink, isUpgrade, isSelf, wasWhispered, 
     if showItemIlvl then
         local ilvlFs = row:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
         ilvlFs:SetPoint("RIGHT", row, "RIGHT", cursor, 0)
-        ilvlFs:SetText(string.format("|cff888888%s:%d|r", ns.L.LABEL_ILVL, itemLevel))
+        ilvlFs:SetText(string.format("|cff" .. C.dim .. "%s:%d|r", ns.L.LABEL_ILVL, itemLevel))
         cursor = cursor - COL
     end
 
@@ -215,7 +231,7 @@ function UI:AddLootEntry(playerName, itemLink, isUpgrade, isSelf, wasWhispered, 
     label:SetPoint("RIGHT", row,   "RIGHT", labelRight, 0)
     label:SetJustifyH("LEFT")
     label:SetNonSpaceWrap(false)
-    local name = isSelf and ("|cffffd700" .. ns.L.LABEL_YOU .. "|r") or playerName
+    local name = isSelf and ("|cff" .. C.gold .. ns.L.LABEL_YOU .. "|r") or playerName
     label:SetText(name .. ": " .. itemLink)
 
     -- Tooltip only when hovering the icon or item link text
@@ -273,7 +289,7 @@ function UI:ShowTest()
 
     local player = UnitName("player")
     self:AddLootEntry("Thrall",   L(1), false, false, false, nil)  -- plain loot
-    self:AddLootEntry("Jaina",    L(2), true,  false, true,  485)  -- upgrade, auto-whispered, their:485
-    self:AddLootEntry("Sylvanas", L(3), true,  false, false, 462)  -- upgrade, Ask pending, their:462
+    self:AddLootEntry("Jaina",    L(2), true,  false, true,  285)  -- upgrade, auto-whispered, their:485
+    self:AddLootEntry("Sylvanas", L(3), true,  false, false, 289)  -- upgrade, Ask pending, their:462
     self:AddLootEntry(player,     L(4), true,  true,  false, nil)  -- self upgrade
 end
