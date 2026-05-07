@@ -130,9 +130,7 @@ local function MakeAskButton(row, itemLink, playerName)
     label:SetText("|cff" .. C.ask .. ns.L.ASK_BUTTON .. "|r")
 
     btn:SetScript("OnClick", function(self)
-        local db  = ns.addon.db.profile
-        local msg = (db.whisperTemplate or ns.L.WHISPER_TEMPLATE):gsub("%%item", itemLink)
-        C_ChatInfo.SendChatMessage(msg, "WHISPER", nil, playerName)
+        ns.SendWhisper(playerName, itemLink)
         self:Hide()
         local sent = row:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
         sent:SetPoint("RIGHT", row, "RIGHT", -3, 0)

@@ -12,6 +12,12 @@ ns.L = {
     LABEL_ILVL       = "ilvl",
 }
 
+function ns.SendWhisper(playerName, itemLink)
+    local db  = ns.addon.db.profile
+    local msg = (db.whisperTemplate or ns.L.WHISPER_TEMPLATE):gsub("%%item", itemLink)
+    C_ChatInfo.SendChatMessage(msg, "WHISPER", nil, playerName)
+end
+
 local LootRatter = LibStub("AceAddon-3.0"):NewAddon(ADDON_NAME,
     "AceConsole-3.0", "AceEvent-3.0")
 ns.addon = LootRatter

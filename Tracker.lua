@@ -148,8 +148,7 @@ local function TrySendWhisper(db, playerName, itemLink, isUpgrade, isSelf, loote
     if db.debug then return false end
     if not (isUpgrade and db.autoWhisper and not isSelf) then return false end
     if db.whisperOnlyIfLooterOutgearsSlot and not looterHasHigherIlvl then return false end
-    local msg = (db.whisperTemplate or ns.L.WHISPER_TEMPLATE):gsub("%%item", itemLink)
-    C_ChatInfo.SendChatMessage(msg, "WHISPER", nil, playerName)
+    ns.SendWhisper(playerName, itemLink)
     return true
 end
 
