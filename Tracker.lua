@@ -194,9 +194,8 @@ local function OnLootMessage(_, text)
     if not IsInTrackedInstance() then return end
     if not ns.addon.db.profile.enabled then return end
 
-    -- Extract full item hyperlink: |Hitem:...|h[Name]|h|r
-    local itemLink = text:match("(|H.+|r)")
-    if not itemLink then return end
+    local itemId = text:match("|Hitem:(%d+):")
+    if not itemId then return end
 
     local playerName
     if text:match("^You receive") then
@@ -215,16 +214,27 @@ local function OnLootMessage(_, text)
     end
     if not playerName then return end
 
-    if ns.addon.db.profile.debug then
-        ns.addon:Debug("CHAT_MSG_LOOT  player=" .. playerName .. "  link=" .. itemLink)
+    local function proceed(safeLink)
+        if ns.addon.db.profile.debug then
+            ns.addon:Debug("CHAT_MSG_LOOT  player=" .. playerName .. "  link=" .. safeLink)
+        end
+        local _, _, _, lootedLevel = C_Item.GetItemInfo(safeLink)
+        if lootedLevel then
+            ProcessLoot(playerName, safeLink)
+        else
+            C_Timer.After(0.5, function() ProcessLoot(playerName, safeLink) end)
+        end
     end
 
-    -- Retry once after 0.5s if item data isn't cached yet
-    local _, _, _, lootedLevel = C_Item.GetItemInfo(itemLink)
-    if lootedLevel then
-        ProcessLoot(playerName, itemLink)
+    local _, safeLink = C_Item.GetItemInfo(tonumber(itemId))
+    if safeLink then
+        proceed(safeLink)
     else
-        C_Timer.After(0.5, function() ProcessLoot(playerName, itemLink) end)
+        local item = C_Item.CreateFromItemID(tonumber(itemId))
+        item:ContinueOnItemLoad(function()
+            local _, loadedLink = C_Item.GetItemInfo(tonumber(itemId))
+            if loadedLink then proceed(loadedLink) end
+        end)
     end
 end
 
