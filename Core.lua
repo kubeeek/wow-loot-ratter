@@ -51,7 +51,9 @@ end
 
 function LootRatter:SlashHandler(input)
     input = input and input:trim() or ""
-    if input == "debug" then
+    if input == "show" then
+        ns.UI:Show()
+    elseif input == "debug" then
         self.db.profile.debug = not self.db.profile.debug
         self:Print(ns.DISPLAY_NAME .. ": Debug " .. (self.db.profile.debug and "ON" or "OFF"))
     elseif input == "debug show" then
