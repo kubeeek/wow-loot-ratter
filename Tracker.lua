@@ -188,6 +188,17 @@ local function ProcessLoot(playerName, itemLink)
     local wasWhispered = TrySendWhisper(db, playerName, itemLink, isUpgrade, isSelf, looterHasHigherIlvl)
     ns.UI:AddLootEntry(playerName, itemLink, isUpgrade, isSelf, wasWhispered, looterEquippedLevel)
 end
+local function FormatToPattern(s)
+    return s:gsub("%(", "%%(")
+             :gsub("%)", "%%)")
+             :gsub("%%s", "(.+)")
+             :gsub("%%d", "(%%d+)")
+end
+
+local PATTERN_LOOT_SELF    = "^" .. FormatToPattern(LOOT_ITEM_SELF)
+local PATTERN_LOOT_SELF_M  = "^" .. FormatToPattern(LOOT_ITEM_SELF_MULTIPLE)
+local PATTERN_LOOT_OTHER   = "^" .. FormatToPattern(LOOT_ITEM)
+local PATTERN_LOOT_OTHER_M = "^" .. FormatToPattern(LOOT_ITEM_MULTIPLE)
 
 local function OnLootMessage(_, text)
     if not IsInTrackedInstance() then return end
@@ -197,11 +208,11 @@ local function OnLootMessage(_, text)
     if not itemId then return end
 
     local playerName
-    if text:match("^You receive") then
+    if text:match(PATTERN_LOOT_SELF) or text:match(PATTERN_LOOT_SELF_M) then
         local name, realm = UnitName("player")
         playerName = (realm and realm ~= "") and (name .. "-" .. realm) or name
     else
-        local shortName = text:match("^(.+) receives? loot:")
+        local shortName = text:match(PATTERN_LOOT_OTHER) or text:match(PATTERN_LOOT_OTHER_M)
         if not shortName then return end
         local unit = GetUnitByName(shortName)
         local fullName, realm = UnitName(unit or "")
@@ -211,6 +222,7 @@ local function OnLootMessage(_, text)
             playerName = shortName
         end
     end
+
     if not playerName then return end
 
     local function proceed(safeLink)
