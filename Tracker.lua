@@ -204,7 +204,10 @@ local function OnLootMessage(_, text)
     if not IsInTrackedInstance() then return end
     if not ns.addon.db.profile.enabled then return end
 
-    local itemId = text:match("|Hitem:(%d+):")
+    local itemString = text:match("|H(item:[^|]+)|h")
+    if not itemString then return end
+
+    local itemId = itemString:match("item:(%d+)")
     if not itemId then return end
 
     local playerName
@@ -225,10 +228,16 @@ local function OnLootMessage(_, text)
 
     if not playerName then return end
 
-    local function proceed(safeLink)
+    local function proceed()
+        -- Pass full itemString to GetItemInfo so bonus IDs are respected,
+        -- but the returned safeLink is Blizzard-sanitized (no raw chat garbage)
+        local _, safeLink = C_Item.GetItemInfo(itemString)
+        if not safeLink then return end
+
         if ns.addon.db.profile.debug then
             ns.addon:Debug("CHAT_MSG_LOOT  player=" .. playerName .. "  link=" .. safeLink)
         end
+
         local _, _, _, lootedLevel = C_Item.GetItemInfo(safeLink)
         if lootedLevel then
             ProcessLoot(playerName, safeLink)
@@ -237,15 +246,12 @@ local function OnLootMessage(_, text)
         end
     end
 
-    local _, safeLink = C_Item.GetItemInfo(tonumber(itemId))
-    if safeLink then
-        proceed(safeLink)
+    local _, existingLink = C_Item.GetItemInfo(itemString)
+    if existingLink then
+        proceed()
     else
         local item = C_Item.CreateFromItemID(tonumber(itemId))
-        item:ContinueOnItemLoad(function()
-            local _, loadedLink = C_Item.GetItemInfo(tonumber(itemId))
-            if loadedLink then proceed(loadedLink) end
-        end)
+        item:ContinueOnItemLoad(function() proceed() end)
     end
 end
 
