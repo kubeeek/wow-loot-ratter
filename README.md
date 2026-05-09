@@ -5,7 +5,6 @@
 Loot Ratter automatically whispers party members about loot with the classic *"do you need that?"*. No shame — sniff out every loot piece in the group and be sure you're first to claim it for your alts.
  
 [![CurseForge](https://img.shields.io/badge/CurseForge-Loot%20Ratter-orange)](https://www.curseforge.com/wow/addons/loot-ratter)
-![Version](https://img.shields.io/badge/version-1.0.1-blue)
 ![WoW](https://img.shields.io/badge/WoW-Retail%2012.0.5-yellow)
 ![License](https://img.shields.io/badge/license-All%20Rights%20Reserved-red)
  
