@@ -1,7 +1,8 @@
 ## Interface: 120005
 ## Title: Loot Ratter
 ## Notes: Tracks group loot in instances. Highlights upgrades and auto-whispers looters.
-## Version: 1.0.0
+## Version: 1.0.2
+## X-Curse-Project-ID: 1532043
 ## SavedVariables: LootRatterDB
 ## IconTexture: Interface\AddOns\LootRatter\icon.tga
 
